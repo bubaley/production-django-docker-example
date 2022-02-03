@@ -1,0 +1,9 @@
+Django
+django-cors-headers
+django-environ
+django-silk
+djangorestframework
+djangorestframework-simplejwt
+loguru
+requests
+sentry-sdk
