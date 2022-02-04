@@ -1,5 +1,4 @@
 from django.urls import path, include
-
 from core.utils.urls import urlpatterns
 
 urlpatterns += [

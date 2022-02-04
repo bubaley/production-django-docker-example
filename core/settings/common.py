@@ -1,8 +1,6 @@
 import datetime
 import environ
 from loguru import logger
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env()
 environ.Env.read_env()
@@ -16,16 +14,8 @@ logger.add(f'{BASE_DIR}/logs/today.log',
 
 SECRET_KEY = env.str('SECRET_KEY', 'secret_key')
 ALLOWED_HOSTS = env.list('ALLOWED_HOST', default=['*'])
+CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=['http://localhost:8080'])
 DEBUG = env.bool('DEBUG', default=True)
-
-SENTRY_DSN = env.str('SENTRY_DSN', None)
-if SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        traces_sample_rate=1.0,
-        send_default_pii=True
-    )
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -71,9 +61,21 @@ TEMPLATES = [
 ROOT_URLCONF = 'core.urls'
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': env.db_url('DATABASE_URL', 'sqlite:///' + root('db.sqlite3'))
-}
+if env.str('SQL_ENGINE', None):
+    DATABASES = {
+        'default': {
+            'ENGINE': env.str('SQL_ENGINE'),
+            'NAME': env.str('SQL_DATABASE'),
+            'USER': env.str('SQL_USER'),
+            'PASSWORD': env.str('SQL_PASSWORD'),
+            'HOST': env.str('SQL_HOST'),
+            'PORT': env.str('SQL_PORT'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': env.db_url('DATABASE_URL', 'sqlite:///' + root('db.sqlite3'))
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -110,9 +112,9 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,
+    'UPDATE_LAST_LOGIN': True,
 }
-
-CORS_ORIGIN_WHITELIST = ['http://localhost:8080']
 
 AUTH_USER_MODEL = 'user.User'
 

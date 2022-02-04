@@ -7,3 +7,4 @@ djangorestframework-simplejwt
 loguru
 requests
 sentry-sdk
+gunicorn
