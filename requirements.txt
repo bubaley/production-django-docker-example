@@ -8,3 +8,5 @@ loguru
 requests
 sentry-sdk
 gunicorn
+air-drf-relation
+django-filter

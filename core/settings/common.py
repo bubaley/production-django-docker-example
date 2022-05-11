@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'user'
+    'user',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -106,6 +107,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'core.utils.pagination.MainPagination',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
 

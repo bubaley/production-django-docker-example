@@ -41,7 +41,7 @@ class MainPagination(PageNumberPagination):
             self.display_page_controls = True
 
         self.request = request
-        return list(self.page)
+        return self.page.object_list
 
     def get_paginated_response(self, data):
         return Response(OrderedDict([
