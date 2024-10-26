@@ -1,11 +1,19 @@
-FROM python:3.9.2-alpine3.13
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-WORKDIR /code
+FROM ghcr.io/astral-sh/uv:python3.12-alpine
 
-RUN apk update && apk add gcc python3-dev musl-dev libffi-dev gettext
-COPY requirements.txt /code/
-RUN pip install --upgrade pip
-RUN pip install -U pip setuptools
-RUN pip install -r requirements.txt
-COPY . /code/
+WORKDIR /app
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+COPY . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+ENTRYPOINT []

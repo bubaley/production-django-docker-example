@@ -1,16 +1,26 @@
+from air_drf_relation.serializers import AirModelSerializer
 from django.db import transaction
 from rest_framework import serializers
+
+from user.functions.validate_user_password import validate_user_password
 from user.models import User
-from user.services import validate_user_password
 
 
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(style={"input_type": "password"}, write_only=True)
+class UserSerializer(AirModelSerializer):
+    password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'is_staff', 'last_name', 'phone', 'password',)
-        read_only_fields = ('is_superuser',)
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'is_staff',
+            'last_name',
+            'phone',
+            'password',
+        )
+        read_only_fields = ('is_superuser', 'is_staff')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,7 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
         if updating:
             self.fields.pop('password')
 
-    def validate_password(self, value):
+    @staticmethod
+    def validate_password(value):
         validate_user_password(password=value)
         return value
 

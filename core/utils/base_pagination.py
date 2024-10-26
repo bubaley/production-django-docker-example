@@ -1,11 +1,12 @@
+from collections import OrderedDict
+
 from django.core.paginator import InvalidPage
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from collections import OrderedDict
 
 
-class MainPagination(PageNumberPagination):
+class BasePagination(PageNumberPagination):
     page_size = 20
     max_page_size = 100
     all_items_string = 'all'
@@ -31,9 +32,7 @@ class MainPagination(PageNumberPagination):
         try:
             self.page = paginator.page(page_number)
         except InvalidPage as exc:
-            msg = self.invalid_page_message.format(
-                page_number=page_number, message=str(exc)
-            )
+            msg = self.invalid_page_message.format(page_number=page_number, message=str(exc))
             raise NotFound(msg)
 
         if paginator.num_pages > 1 and self.template is not None:
@@ -44,13 +43,17 @@ class MainPagination(PageNumberPagination):
         return self.page.object_list
 
     def get_paginated_response(self, data):
-        return Response(OrderedDict([
-            ('total', self.page.paginator.count),
-            ('page', self.page.number),
-            ('page_size', self.page.paginator.per_page),
-            ('last_page', self.page.paginator.num_pages),
-            ('results', data)
-        ]))
+        return Response(
+            OrderedDict(
+                [
+                    ('total', self.page.paginator.count),
+                    ('page', self.page.number),
+                    ('page_size', self.page.paginator.per_page),
+                    ('last_page', self.page.paginator.num_pages),
+                    ('results', data),
+                ]
+            )
+        )
 
     def get_page_size(self, request):
         page_size = request.query_params.get(self.page_size_query_param)

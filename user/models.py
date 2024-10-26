@@ -4,7 +4,6 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-
     def create_superuser(self, email, first_name, last_name, phone, password):
         user = User.objects.create(
             email=self.normalize_email(email),
@@ -12,7 +11,7 @@ class UserManager(BaseUserManager):
             last_name=last_name,
             phone=phone,
             is_superuser=True,
-            is_staff=True
+            is_staff=True,
         )
         user.set_password(password)
         user.save()
@@ -20,12 +19,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(null=True, unique=False, max_length=150)
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=20, null=True, blank=True)
+    # username = models.CharField(null=True, unique=False, max_length=128)
+    first_name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128)
+    phone = models.CharField(max_length=20, null=True)
     objects = UserManager()
 
     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone']
@@ -34,4 +32,4 @@ class User(AbstractUser):
     user_permissions = None
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-id']

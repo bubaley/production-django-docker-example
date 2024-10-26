@@ -1,21 +1,21 @@
 import datetime
+import sys
+from pathlib import Path
+
 import environ
-from loguru import logger
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
-environ.Env.read_env()
-root = environ.Path(__file__) - 3
-BASE_DIR = root()
+environ.Env.read_env(BASE_DIR / '.env')
 
-logger.add(f'{BASE_DIR}/logs/today.log',
-           rotation='00:00',
-           compression='tar.gz',
-           format='{time:YYYY-MM-DD HH:mm} | {level} | {message} | {file.path}:{function}')
+DEBUG = env.bool('DEBUG', True)
+TESTING = sys.argv[1:2] == ['test']
+SETTINGS_MODULE = 'core.settings.dev' if DEBUG else 'core.settings.prod'
+SECRET_KEY = env.str('SECRET_KEY')
 
-SECRET_KEY = env.str('SECRET_KEY', 'secret_key')
 ALLOWED_HOSTS = env.list('ALLOWED_HOST', default=['*'])
 CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=['http://localhost:8080'])
-DEBUG = env.bool('DEBUG', default=True)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,8 +27,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'user',
     'django_filters',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -46,7 +46,7 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [root('templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,7 +75,10 @@ if env.str('SQL_ENGINE', None):
     }
 else:
     DATABASES = {
-        'default': env.db_url('DATABASE_URL', 'sqlite:///' + root('db.sqlite3'))
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'data' / 'db.sqlite3',
+        }
     }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -88,29 +91,20 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = False
-LOCALE_PATHS = [
-    'core/locale',
-]
 
-STATIC_URL = '/static/'
-STATIC_PATH = root('static')
-MEDIA_URL = '/media/'
-MEDIA_ROOT = root('media')
+STATICFILES_DIRS = [Path(BASE_DIR / 'data' / 'static')]
+STATIC_URL = 'static/'
+
+MEDIA_ROOT = BASE_DIR / 'data' / 'media'
+MEDIA_URL = 'media/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
-    'DEFAULT_PAGINATION_CLASS': 'core.utils.pagination.MainPagination',
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+    'DEFAULT_PAGINATION_CLASS': 'core.utils.base_pagination.BasePagination',
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
 SIMPLE_JWT = {
@@ -121,18 +115,19 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'user.User'
-
-REDIS_HOST = 'localhost'
-REDIS_PORT = '6379'
-REDIS_DB_NUMBER = env.int('REDIS_DB_NUMBER', 0)
-BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + f'/{REDIS_DB_NUMBER}'
-BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + f'/{REDIS_DB_NUMBER}'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+APPEND_SLASH = False
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
         'LOCATION': 'app_cache',
-        'TIMEOUT': 604800
+        'TIMEOUT': 604800,
     }
 }
+
+CELERY_BROKER_URL = env.str('BROKER_URL', None)
+CELERY_BACKEND_URL = env.str('CELERY_BACKEND_URL', None)
+CELERY_BEAT_ENABLED = env.str('CELERY_BEAT_ENABLED', False)
+
+# --- CUSTOM_SETTINGS ---

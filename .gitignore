@@ -26,7 +26,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-media/
+data/media/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -139,3 +139,4 @@ dmypy.json
 *.njsproj
 *.sln
 *.sw?
+celerybeat-schedule.db
