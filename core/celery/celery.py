@@ -11,7 +11,7 @@ setup()
 s = conf.settings
 
 app = Celery(
-    main='core',
+    main='app',
     broker=s.CELERY_BROKER_URL,
     backend=s.CELERY_BACKEND_URL,
     broker_connection_retry_on_startup=True,

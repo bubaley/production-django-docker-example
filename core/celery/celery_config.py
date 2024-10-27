@@ -7,7 +7,7 @@ worker_prefetch_multiplier = 1
 worker_max_tasks_per_child = 1000
 worker_disable_rate_limits = False
 broker_transport_options = {'queue_order_strategy': 'priority'}
-beat_schedule_filename = common.BASE_DIR / 'data' / 'celerybeat-schedule.db'
+beat_schedule_filename = common.BASE_DIR / 'data' / 'celerybeat-schedule'
 
 task_routes = {
     # urgent
