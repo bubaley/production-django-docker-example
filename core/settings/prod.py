@@ -8,7 +8,7 @@ if SENTRY_DSN:
     sentry_sdk.init(
         integrations=[DjangoIntegration()],
         dsn=SENTRY_DSN,
-        environment=env.str('SENTRY_ENV', None),
+        environment=env.str('SENTRY_ENV', 'production'),
         traces_sample_rate=0.0,
         send_default_pii=True,
     )
