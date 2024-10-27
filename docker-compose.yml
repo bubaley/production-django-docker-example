@@ -24,7 +24,7 @@ services:
   db:
     <<: *restart_policy
     image: postgres:17.0-alpine3.20
-    shm_size: 1g
+    shm_size: 256m
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
