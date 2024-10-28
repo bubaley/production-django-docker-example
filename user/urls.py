@@ -1,4 +1,4 @@
-from core.utils.base_simple_router import BaseSimpleRouter
+from core.utils.router import BaseSimpleRouter
 
 from .views import UserViewSet
 
