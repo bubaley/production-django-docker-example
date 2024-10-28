@@ -2,6 +2,7 @@ import os
 
 from celery import Celery
 from django import conf, setup
+from loguru import logger
 
 from core.settings import common
 
@@ -20,7 +21,7 @@ app.config_from_object('core.celery.celery_config')
 app.autodiscover_tasks()
 
 if not s.CELERY_BEAT_ENABLED:
-    print('Celery beat disabled by settings.')
+    logger.info('Celery beat disabled by settings. Set CELERY_BEAT_ENABLED=True for enable.')
     app.conf.beat_schedule = {}
 if s.TESTING:
     app.conf.update(task_always_eager=True)

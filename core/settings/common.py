@@ -4,6 +4,8 @@ from pathlib import Path
 
 import environ
 
+from core.utils.logger import init_logging
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
@@ -16,6 +18,8 @@ SECRET_KEY = env.str('SECRET_KEY')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOST', default=['*'])
 CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=['http://localhost:8080'])
+
+LOGGING = init_logging(log_dir=BASE_DIR / 'data' / 'logs', debug=DEBUG)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -102,7 +106,7 @@ MEDIA_URL = 'media/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
     'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
-    'DEFAULT_PAGINATION_CLASS': 'core.utils.base_pagination.BasePagination',
+    'DEFAULT_PAGINATION_CLASS': 'core.utils.pagination.BasePagination',
     'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
@@ -128,6 +132,6 @@ CACHES = {
 
 CELERY_BROKER_URL = env.str('BROKER_URL', None)
 CELERY_BACKEND_URL = env.str('CELERY_BACKEND_URL', None)
-CELERY_BEAT_ENABLED = env.str('CELERY_BEAT_ENABLED', False)
+CELERY_BEAT_ENABLED = env.bool('CELERY_BEAT_ENABLED', False)
 
 # --- CUSTOM_SETTINGS ---
