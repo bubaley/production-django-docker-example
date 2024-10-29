@@ -5,5 +5,5 @@ fi
 GUNICORN_WORKERS=${GUNICORN_WORKERS:-4}
 
 python manage.py migrate
-# django-admin compilemessages -l ru --ignore=env
+# django-admin compilemessages -l ru --ignore=env # Check Dockerfile for gettext
 gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$GUNICORN_WORKERS --bind 0.0.0.0:8000
