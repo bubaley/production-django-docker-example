@@ -12,13 +12,13 @@ services:
   app:
     <<: *app_defaults
     build: .
-    command: sh scripts/start_app.sh
+    command: make gunicorn
     ports:
       - "${ENTRY_PORT:-15000}:8000"
   celery:
     <<: *app_defaults
     build: .
-    command: sh scripts/start_celery.sh
+    command: make celery
   redis:
     <<: *restart_policy
     image: redis:7.4.1-alpine
