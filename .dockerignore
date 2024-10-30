@@ -4,3 +4,6 @@ data
 .pytest_cache
 __pycache__
 .dockerignore
+*.sql
+*.sql.zip
+*.log

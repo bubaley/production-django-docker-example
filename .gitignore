@@ -141,3 +141,6 @@ dmypy.json
 *.njsproj
 *.sln
 *.sw?
+
+*.sql
+*.sql.zip
