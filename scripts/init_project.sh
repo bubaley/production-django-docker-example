@@ -1,3 +1,5 @@
+#!/bin/bash
+
 uv add Django \
       django-cors-headers \
       django-environ \
@@ -11,6 +13,7 @@ uv add Django \
       django-filter \
       redis \
       celery \
+      django-extensions \
       "psycopg[binary]"
 uv add ruff pre-commit --group dev
 pre-commit install

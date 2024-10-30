@@ -6,8 +6,7 @@ from loguru import logger
 
 
 def init_logging(log_dir: Path, debug: bool, *args, **kwargs):
-    _init_logger(log_dir)
-
+    _init_logger(log_dir, debug, *args, **kwargs)
     return {
         'version': 1,
         'disable_existing_loggers': False,
@@ -23,31 +22,31 @@ def init_logging(log_dir: Path, debug: bool, *args, **kwargs):
         },
         'loggers': {
             'django': {
-                'handlers': ['console'] if debug else [],
+                'handlers': ['console'],
                 'level': 'INFO',
             },
-            'django.server': {
+            'django.server': {  # Log requests - "GET /api/v1/users/me HTTP/1.1" 500. Disabled in container
                 'handlers': ['loguru'],
-                'level': 'INFO' if debug else 'ERROR',
+                'level': 'INFO',
                 'propagate': False,
             },
             'django.request': {
                 'handlers': ['loguru'],
-                'level': 'INFO' if debug else 'ERROR',
+                'level': 'ERROR',  # Log request errors
                 'propagate': False,
             },
         },
     }
 
 
-def _init_logger(log_dir: Path):
+def _init_logger(log_dir: Path, debug: bool, *args, **kwargs):
     sys.excepthook = _log_exceptions
 
     format_values = [
         '<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>',
         '<level>{level: <8}</level>',
         '{message}',
-        '<cyan>{file.name}<red>:</red>{function}<red>:</red>{line}</cyan>',
+        '<cyan>{name}<red>:</red>{function}<red>:</red>{line}</cyan>',
     ]
     params = {'format': ' <red>|</red> '.join(format_values), 'backtrace': False, 'diagnose': False}
 
@@ -56,13 +55,13 @@ def _init_logger(log_dir: Path):
         sys.stdout,
         **params,
     )
-    logger.add(
-        log_dir / 'today.log',
-        rotation='00:00',
-        retention='1 week',
-        compression='zip',
-        **params,
-    )
+    if debug:  # Disabled write log to files in production mode
+        logger.add(
+            log_dir / 'today.log',
+            rotation='00:00',
+            retention='1 week',
+            **params,
+        )
 
 
 def _log_exceptions(exc_type, exc_value, exc_traceback):
