@@ -58,11 +58,11 @@ coverage.xml
 
 # Django stuff:
 *.log
+*.log.zip
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 celerybeat-schedule.db
-*.log.zip
 
 # Flask stuff:
 instance/
