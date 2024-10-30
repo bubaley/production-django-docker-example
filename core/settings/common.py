@@ -123,16 +123,17 @@ AUTH_USER_MODEL = 'user.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH = False
 
+CACHE_LOCATION_URL = env.str('CACHE_LOCATION_URL', None)
+backends = 'django.core.cache.backends'
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'app_cache',
-        'TIMEOUT': 604800,
+        'BACKEND': f'{backends}.redis.RedisCache' if CACHE_LOCATION_URL else f'{backends}.db.DatabaseCache',
+        'LOCATION': CACHE_LOCATION_URL or 'app_cache',
+        'TIMEOUT': 86400 * 7,  # 7 days
     }
 }
 
 CELERY_BROKER_URL = env.str('BROKER_URL', None)
 CELERY_BACKEND_URL = env.str('CELERY_BACKEND_URL', None)
-CELERY_BEAT_ENABLED = env.bool('CELERY_BEAT_ENABLED', False)
 
 # --- CUSTOM_SETTINGS ---

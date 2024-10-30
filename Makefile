@@ -8,6 +8,8 @@ DOCKER_COMPOSE := docker compose
 
 GUNICORN_WORKERS ?= 4
 CELERY_CONCURRENCY ?= 4
+CELERY_BEAT_ENABLED ?= false
+CELERY_BEAT_FLAG = $(if $(filter true True TRUE,$(CELERY_BEAT_ENABLED)),-B,)
 
 # ----------- SHORT COMMANDS -----------
 
@@ -20,6 +22,12 @@ mr: migrate run ## short run migrate && runserver
 
 run: ## run runserver
 	$(MANAGE) runserver
+
+shell: ## run shell_plus
+	$(MANAGE) shell_plus
+
+lint: ## run lint
+	pre-commit run --all-files
 
 migrate: ## run migrate
 	$(MANAGE) migrate
@@ -38,7 +46,7 @@ gunicorn: migrate ## run gunicorn
 	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
 
 celery: ## run celery workers with beat
-	celery -A core worker -B -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
+	celery -A core worker $(CELERY_BEAT_FLAG) -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
 
 secret: ## generate secret_key
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key().replace('#', '+'))"

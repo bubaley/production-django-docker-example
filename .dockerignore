@@ -7,3 +7,4 @@ __pycache__
 *.sql
 *.sql.zip
 *.log
+dump.rdb

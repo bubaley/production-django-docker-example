@@ -24,6 +24,8 @@ class BasePagination(PageNumberPagination):
             if page_size < 1:
                 page_size = self.page_size
 
+        if not queryset.query.order_by:
+            queryset.query.order_by = ('pk',)
         paginator = self.django_paginator_class(queryset, page_size)
         page_number = request.query_params.get(self.page_query_param, 1)
         if page_number in self.last_page_strings:
