@@ -2,6 +2,7 @@ x-restart-policy: &restart_policy
   restart: unless-stopped
 x-app-defaults: &app_defaults
   <<: *restart_policy
+  stop_grace_period: "3s"
   volumes:
     - ./data:/app/data
   depends_on:
