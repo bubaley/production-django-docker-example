@@ -1,2 +1,6 @@
 .venv
 data
+.git
+.pytest_cache
+__pycache__
+.dockerignore
