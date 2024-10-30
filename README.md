@@ -24,18 +24,18 @@ This is a Django project template using Python 3.12, designed for easy local and
 
 3. **Initialize the Project**:
     ```bash
-    . ./scripts/init_project.sh
+    make init-project
     ```
 
 4. **Set Up Database Migrations**:
     ```bash
-    python manage.py makemigrations
-    python manage.py migrate
+    make makemigrations
+    make migrate
     ```
 
 5. **Run the Server**:
     ```bash
-    python manage.py runserver
+    make run
     ```
 
 ### Docker-Based Deployment
@@ -56,7 +56,7 @@ This is a Django project template using Python 3.12, designed for easy local and
 - **Package Manager**: `uv` for optimized builds
 - **Configuration**: Defined in `pyproject.toml` and `.env`
 - **Logs, Media, and Static Files**: Mapped to the `data` directory for easy mounting and persistence
-- **Celery**: Configured in `core/celery.py`, with startup handled via `scripts/start_celery.sh`
+- **Celery**: Configured in `core/celery.py`
 
 ## Key Dependencies
 
@@ -81,7 +81,6 @@ The project uses the following main dependencies:
 ## Important Notes
 
 - **Data Persistence**: `logs`, `media`, `static`, and `db.sqlite3` are stored in the `data` directory for easy mounting with Docker volumes.
-- **Celery Configuration**: Located in `core/celery.py`. Use `scripts/start_celery.sh` to start Celery tasks.
 
 ## License
 
