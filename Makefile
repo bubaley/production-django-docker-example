@@ -6,7 +6,7 @@ endif
 MANAGE := python manage.py
 DOCKER_COMPOSE := docker compose
 
-CELERY_WORKERS ?= 4
+GUNICORN_WORKERS ?= 4
 CELERY_CONCURRENCY ?= 4
 
 # ----------- SHORT COMMANDS -----------
@@ -35,7 +35,7 @@ test: ## run test --keepdb
 
 gunicorn: migrate ## run gunicorn
 	# django-admin compilemessages -l ru --ignore=env # Check Dockerfile for gettext
-	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(CELERY_WORKERS) --bind 0.0.0.0:8000
+	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
 
 celery: ## run celery workers with beat
 	celery -A core worker -B -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
