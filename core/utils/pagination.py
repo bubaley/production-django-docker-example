@@ -24,6 +24,7 @@ class BasePagination(PageNumberPagination):
             if page_size < 1:
                 page_size = self.page_size
 
+        # Auto set order_by for correct pagination if not provided
         if not queryset.query.order_by and not queryset.model._meta.ordering:
             queryset.query.order_by = ('pk',)
 
