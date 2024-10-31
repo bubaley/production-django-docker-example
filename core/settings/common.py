@@ -136,7 +136,7 @@ CACHES = {
     }
 }
 
-CELERY_BROKER_URL = env.str('BROKER_URL', None)
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', None)
 CELERY_BACKEND_URL = env.str('CELERY_BACKEND_URL', None)
 
 # --- CUSTOM_SETTINGS ---
