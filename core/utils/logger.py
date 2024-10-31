@@ -1,3 +1,4 @@
+import inspect
 import logging
 import sys
 from pathlib import Path
@@ -95,7 +96,15 @@ class LoguruHandler(logging.Handler):
             msg = self._get_celery_message(record)
         else:
             msg = record.getMessage()
-        logger.opt(exception=record.exc_info, depth=6).log(level, msg)
+        depth = self._get_depth(record)
+        logger.opt(exception=record.exc_info, depth=depth).log(level, msg)
+
+    @staticmethod
+    def _get_depth(record: logging.LogRecord):
+        for depth, frame in enumerate(inspect.stack()):
+            if record.pathname == frame.filename:
+                return depth - 1
+        return 2
 
     @staticmethod
     def _get_celery_message(record: logging.LogRecord):
