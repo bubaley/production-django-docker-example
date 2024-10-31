@@ -1,6 +1,7 @@
 import os
+from logging.config import dictConfig
 
-from celery import Celery
+from celery import Celery, signals
 from django import conf, setup
 
 from core.settings import common
@@ -19,3 +20,8 @@ app.autodiscover_tasks()
 
 if conf.settings.TESTING:
     app.conf.update(task_always_eager=True)
+
+
+@signals.setup_logging.connect
+def config_loggers(*args, **kwargs):
+    dictConfig(conf.settings.LOGGING)
