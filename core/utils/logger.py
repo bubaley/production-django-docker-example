@@ -35,34 +35,37 @@ class Logg:
     """
 
     @staticmethod
-    def info(e: str, *args, **kwargs):
-        Logg._log(e, INFO, *args, **kwargs)
+    def info(*args, **kwargs):
+        Logg._log(INFO, *args, **kwargs)
 
     @staticmethod
-    def warning(e: str, *args, **kwargs):
-        Logg._log(e, WARNING, *args, **kwargs)
+    def warning(*args, **kwargs):
+        Logg._log(WARNING, *args, **kwargs)
 
     @staticmethod
-    def error(e: str, *args, **kwargs):
-        Logg._log(e, ERROR, *args, **kwargs)
+    def error(*args, **kwargs):
+        Logg._log(ERROR, *args, **kwargs)
 
     @staticmethod
-    def debug(e: str, *args, **kwargs):
-        Logg._log(e, DEBUG, *args, **kwargs)
+    def debug(*args, **kwargs):
+        Logg._log(DEBUG, *args, **kwargs)
 
     @staticmethod
-    def critical(e: str, *args, **kwargs):
-        Logg._log(e, CRITICAL, *args, **kwargs)
+    def critical(*args, **kwargs):
+        Logg._log(CRITICAL, *args, **kwargs)
 
     @staticmethod
-    def _log(e: str, level: str, *args, **kwargs):
-        message = Logg._serialize_message(e, *args, **kwargs)
+    def _log(level: str, *args, **kwargs):
+        message = Logg._serialize_message(*args, **kwargs)
         logger.opt(depth=2).log(level, message)
 
     @staticmethod
-    def _serialize_message(e: str, *args, **kwargs):
-        data = {'e': str(e).lower()}
-        if 'msg' in kwargs:
+    def _serialize_message(*args, **kwargs):
+        data = {'e': str(kwargs.pop('e')).lower() if 'e' in kwargs else 'event.empty'}
+        if len(args) > 0 and isinstance(args[0], str) and 'msg' not in kwargs:
+            data['msg'] = args[0]
+            args = args[1:]
+        elif 'msg' in kwargs:
             data['msg'] = str(kwargs.pop('msg'))
         data.update(kwargs)
         if args:
