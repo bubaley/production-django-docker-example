@@ -1,10 +1,10 @@
 from celery import shared_task
-from loguru import logger
 
 from core.celery.celery_enums import CeleryTasks
+from core.utils.logger import Logg
 
 
 @shared_task(name=CeleryTasks.USER_EXAMPLE)
 def user_example():
-    logger.info({'event': CeleryTasks.USER_EXAMPLE.upper()})
+    Logg.info(e=CeleryTasks.USER_EXAMPLE)
     return {'success': True}
