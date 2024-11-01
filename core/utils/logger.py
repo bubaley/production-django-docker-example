@@ -1,4 +1,5 @@
 import inspect
+import json
 import logging
 import sys
 from pathlib import Path
@@ -14,6 +15,60 @@ from celery.app.trace import (
 )
 from loguru import logger
 
+CRITICAL = 'CRITICAL'
+ERROR = 'ERROR'
+WARNING = 'WARNING'
+INFO = 'INFO'
+DEBUG = 'DEBUG'
+
+
+class Logg:
+    """Class for logging events in JSON format.
+
+    Arguments::
+        args : don't use unnamed arguments
+        e : indicate the event with a dot
+        msg : always set by the second argument. Use short string
+
+    Usage::
+        Logg.info(e='balance.updated', msg='guest balance increased', sum=322)
+    """
+
+    @staticmethod
+    def info(e: str, *args, **kwargs):
+        Logg._log(e, INFO, *args, **kwargs)
+
+    @staticmethod
+    def warning(e: str, *args, **kwargs):
+        Logg._log(e, WARNING, *args, **kwargs)
+
+    @staticmethod
+    def error(e: str, *args, **kwargs):
+        Logg._log(e, ERROR, *args, **kwargs)
+
+    @staticmethod
+    def debug(e: str, *args, **kwargs):
+        Logg._log(e, DEBUG, *args, **kwargs)
+
+    @staticmethod
+    def critical(e: str, *args, **kwargs):
+        Logg._log(e, CRITICAL, *args, **kwargs)
+
+    @staticmethod
+    def _log(e: str, level: str, *args, **kwargs):
+        message = Logg._serialize_message(e, *args, **kwargs)
+        logger.opt(depth=2).log(level, message)
+
+    @staticmethod
+    def _serialize_message(e: str, *args, **kwargs):
+        data = {'e': str(e).lower()}
+        if 'msg' in kwargs:
+            data['msg'] = str(kwargs.pop('msg'))
+        data.update(kwargs)
+        if args:
+            data['args'] = args
+        return json.dumps(data, default=str)
+
 
 def init_logging(log_dir: Path, debug: bool, *args, **kwargs):
     _init_logger(log_dir, debug, *args, **kwargs)
@@ -22,32 +77,32 @@ def init_logging(log_dir: Path, debug: bool, *args, **kwargs):
         'disable_existing_loggers': False,
         'handlers': {
             'console': {
-                'level': 'INFO',
+                'level': INFO,
                 'class': logging.StreamHandler,
             },
             'loguru': {
-                'level': 'INFO',
+                'level': INFO,
                 'class': LoguruHandler,
             },
         },
         'loggers': {
             'django': {
                 'handlers': ['console'],
-                'level': 'INFO',
+                'level': INFO,
             },
             'django.server': {  # Log requests - GET /api/v1/users/me HTTP/1.1 500. Disabled in container
                 'handlers': ['loguru'],
-                'level': 'INFO',
+                'level': INFO,
                 'propagate': False,
             },
             'django.request': {
                 'handlers': ['loguru'],
-                'level': 'ERROR',  # Log request errors
+                'level': ERROR,  # Log request errors
                 'propagate': False,
             },
             'celery': {
                 'handlers': ['loguru'],
-                'level': 'INFO',
+                'level': INFO,
                 'propagate': False,
             },
         },
@@ -80,10 +135,8 @@ def _init_logger(log_dir: Path, debug: bool, *args, **kwargs):
 
 
 def _log_exceptions(exc_type, exc_value, exc_traceback):
-    logger.opt(exception=exc_value).log('ERROR', {'event': 'UNHANDLED', 'type': exc_type.__name__})
-
-
-CELERY_LOG_FORMATS = {}
+    message = Logg._serialize_message(e='exception.hook', type=exc_type.__name__)
+    logger.opt(exception=exc_value).log(ERROR, message)
 
 
 class LoguruHandler(logging.Handler):
@@ -92,12 +145,9 @@ class LoguruHandler(logging.Handler):
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
-        if record.name.startswith('celery.'):
-            msg = self._get_celery_message(record)
-        else:
-            msg = record.getMessage()
+        message = self._prepare_message(record)
         depth = self._get_depth(record)
-        logger.opt(exception=record.exc_info, depth=depth).log(level, msg)
+        logger.opt(exception=record.exc_info, depth=depth).log(level, message)
 
     @staticmethod
     def _get_depth(record: logging.LogRecord):
@@ -107,27 +157,29 @@ class LoguruHandler(logging.Handler):
         return 2
 
     @staticmethod
-    def _get_celery_message(record: logging.LogRecord):
+    def _prepare_message(record: logging.LogRecord):
+        if not record.name.startswith('celery.'):
+            return Logg._serialize_message(e='app.trace', msg=record.getMessage())
+
         if not hasattr(record, 'data'):
-            return str({'event': 'CELERY_TRACE', 'message': record.getMessage()})
+            return Logg._serialize_message(e='celery.trace', msg=record.getMessage())
         celery_log_types = {
-            LOG_RECEIVED: 'RECEIVED',
-            LOG_SUCCESS: 'SUCCESS',
-            LOG_FAILURE: 'FAILURE',
-            LOG_INTERNAL_ERROR: 'INTERNAL_ERROR',
-            LOG_IGNORED: 'IGNORED',
-            LOG_REJECTED: 'REJECTED',
-            LOG_RETRY: 'RETRY',
+            LOG_RECEIVED: 'received',
+            LOG_SUCCESS: 'success',
+            LOG_FAILURE: 'failure',
+            LOG_INTERNAL_ERROR: 'internal_error',
+            LOG_IGNORED: 'ignored',
+            LOG_REJECTED: 'rejected',
+            LOG_RETRY: 'retry',
         }
         data = getattr(record, 'data') or {}
-        message_data = {
-            'event': 'CELERY_LOG',
-            'type': celery_log_types.get(record.msg, 'UNHANDLED'),
-            'task': str(data.get('name')),
-            'task_id': data.get('id'),
-            'args': data.get('args'),
-            'kwargs': data.get('kwargs'),
-            'runtime': f'{round(data['runtime'], 3)}s' if data.get('runtime') else None,
-            'return': data.get('return_value'),
-        }
-        return str(message_data)
+        return Logg._serialize_message(
+            e='celery.log',
+            type=celery_log_types.get(record.msg, 'unhandled'),
+            task=str(data.get('name')),
+            task_id=data.get('id'),
+            args=data.get('args'),
+            kwargs=data.get('kwargs'),
+            runtime=f'{round(data['runtime'], 3)}s' if data.get('runtime') else None,
+            return_value=data.get('return_value'),
+        )

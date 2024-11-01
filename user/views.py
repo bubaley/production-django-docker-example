@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from loguru import logger
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.utils.logger import Logg
 from user.models import User
 from user.serializers import UserSerializer
 
@@ -26,5 +26,5 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(methods=['GET'], detail=False)
     def test(self, request):
         _now = str(datetime.now())
-        logger.info({'event': 'USER.TEST', 'now': _now})
+        Logg.info(e='user.test', msg='test method', success=True, now=_now)
         return Response({'success': True, 'now': _now})
