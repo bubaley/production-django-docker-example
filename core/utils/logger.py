@@ -61,7 +61,7 @@ class Logg:
 
     @staticmethod
     def _serialize_message(*args, **kwargs):
-        data = {'e': str(kwargs.pop('e')).lower() if 'e' in kwargs else 'event.empty'}
+        data = {'e': str(kwargs.pop('e')).lower() if 'e' in kwargs else 'message'}
         if len(args) > 0 and isinstance(args[0], str) and 'msg' not in kwargs:
             data['msg'] = args[0]
             args = args[1:]
@@ -177,7 +177,7 @@ class LoguruHandler(logging.Handler):
         }
         data = getattr(record, 'data') or {}
         return Logg._serialize_message(
-            e='celery.log',
+            e='celery.task',
             type=celery_log_types.get(record.msg, 'unhandled'),
             task=str(data.get('name')),
             task_id=data.get('id'),
