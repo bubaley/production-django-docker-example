@@ -6,13 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  SECRET_KEY: example-secret-key
-
 jobs:
   backend:
     name: backend test
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: example-secret-key
 
     steps:
       - uses: actions/checkout@v4
