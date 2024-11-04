@@ -1,6 +1,6 @@
 FROM ghcr.io/astral-sh/uv:python3.12-alpine
 
-RUN apk add make
+RUN apk add --no-cache make
 # Write all packages in 1 row
 # geos-dev gcc musl-dev (for shapely)
 # gettext gettext (for localization. Check scripts/start_app.sh for compilemessages)

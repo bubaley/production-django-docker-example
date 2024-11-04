@@ -6,8 +6,15 @@ x-app-defaults: &app_defaults
   volumes:
     - ./data:/app/data
   depends_on:
-    - redis
-    - db
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+x-healthcheck-defaults: &healthcheck_defaults
+  interval: 5s
+  timeout: 5s
+  retries: 10
+  start_period: 30s
 services:
   app:
     <<: *app_defaults
@@ -15,15 +22,24 @@ services:
     command: make gunicorn
     ports:
       - "${ENTRY_PORT:-15000}:8000"
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: [ "CMD-SHELL", "wget -q --spider http://0.0.0.0:8000/api/v1/ready || exit 1" ]
   celery:
     <<: *app_defaults
     build: .
     command: make celery
+    depends_on:
+      app:
+        condition: service_healthy
   redis:
     <<: *restart_policy
     image: redis:7.4.1-alpine
     volumes:
       - redis_data:/data
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: [ "CMD", "redis-cli", "ping" ]
   db:
     <<: *restart_policy
     image: postgres:17.0-alpine3.20
@@ -34,6 +50,9 @@ services:
       POSTGRES_DB: ${SQL_DATABASE:-postgres}
       POSTGRES_USER: ${SQL_USER:-postgres}
       POSTGRES_PASSWORD: ${SQL_PASSWORD:-postgres}
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: [ "CMD-SHELL", "pg_isready -U ${SQL_USER:-postgres} -d ${SQL_DATABASE:-postgres}" ]
     command: >
       postgres
       -c max_connections=${SQL_MAX_CONNECTIONS:-100}
