@@ -41,6 +41,10 @@ createsuperuser: ## run createsuperuser
 test: ## run test --keepdb
 	$(MANAGE) test --keepdb
 
+coverage: ## run coverage
+	coverage run manage.py test --keepdb
+	coverage report
+
 gunicorn: migrate ## run gunicorn
 	# django-admin compilemessages -l ru --ignore=env # Check Dockerfile for gettext
 	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
@@ -67,7 +71,7 @@ init-project: ## install all requirements, set pre-commit. Use setup project
       celery \
       django-extensions \
       "psycopg[binary]"
-	uv add ruff pre-commit --group dev
+	uv add ruff pre-commit coverage --group dev
 	pre-commit install
 
 help:

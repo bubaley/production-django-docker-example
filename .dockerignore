@@ -10,4 +10,5 @@ __pycache__
 *.sql
 *.sql.zip
 *.log
+.coverage*
 dump.rdb

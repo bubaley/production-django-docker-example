@@ -23,6 +23,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "coverage>=7.6.4",
     "pre-commit>=4.0.1",
     "ruff>=0.7.1",
 ]
@@ -47,3 +48,19 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 quote-style = "single"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+[tool.coverage.report]
+fail_under = 60
+skip_empty = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == '__main__':",
+    "if settings.DEBUG"
+]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "core/*",
+    'manage.py'
+]
