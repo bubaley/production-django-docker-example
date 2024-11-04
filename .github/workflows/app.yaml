@@ -26,4 +26,3 @@ jobs:
         run: uv sync
       - name: lint
         run: uv run make lint
-      - name
