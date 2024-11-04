@@ -10,5 +10,8 @@ __pycache__
 *.sql
 *.sql.zip
 *.log
-.coverage*
 dump.rdb
+.coverage
+.coverage.*
+coverage.xml
+htmlcov
