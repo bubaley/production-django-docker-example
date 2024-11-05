@@ -1,5 +1,5 @@
 # https://github.com/bubaley/production-django-docker-example
-# version: 1.2.0 | Increase the version after changes from the template, this will make it easier to make new ones
+# version: 1.2.1 | Increase the version after changes from the template, this will make it easier to make new ones
 
 import datetime
 import sys
