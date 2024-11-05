@@ -1,5 +1,10 @@
 x-restart-policy: &restart_policy
   restart: unless-stopped
+x-healthcheck-defaults: &healthcheck_defaults
+  interval: 5s
+  timeout: 5s
+  retries: 10
+  start_period: 30s
 x-app-defaults: &app_defaults
   <<: *restart_policy
   stop_grace_period: "3s"
@@ -10,11 +15,6 @@ x-app-defaults: &app_defaults
       condition: service_healthy
     redis:
       condition: service_healthy
-x-healthcheck-defaults: &healthcheck_defaults
-  interval: 5s
-  timeout: 5s
-  retries: 10
-  start_period: 30s
 services:
   app:
     <<: *app_defaults
