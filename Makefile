@@ -2,7 +2,6 @@ ifneq ("$(wildcard .env)","")
 	include .env
 endif
 
-
 MANAGE := python manage.py
 DOCKER_COMPOSE := docker compose
 
