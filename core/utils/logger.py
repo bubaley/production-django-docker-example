@@ -70,7 +70,7 @@ class Logg:
         data.update(kwargs)
         if args:
             data['args'] = args
-        return json.dumps(data, default=str)
+        return json.dumps(data, default=str, ensure_ascii=False)
 
 
 def init_logging(log_dir: Path, debug: bool, *args, **kwargs):
