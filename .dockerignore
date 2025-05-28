@@ -1,17 +1,159 @@
-.venv
-data
+# Git and version control
 .git
-.pytest_cache
-.idea
-.mypy_cache
-.ruff_cache
-__pycache__
-.dockerignore
-*.sql
-*.sql.zip
-*.log
-dump.rdb
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+docs/
+LICENSE
+CHANGELOG
+HISTORY
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+.virtualenv/
+env/
+ENV/
+
+# UV package manager
+.uv_cache/
+
+# Package managers
+pip-wheel-metadata/
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+.emacs.d/
+*.sublime-project
+*.sublime-workspace
+.atom/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# Testing and coverage
+.pytest_cache/
 .coverage
 .coverage.*
+htmlcov/
+.tox/
+.nox/
 coverage.xml
-htmlcov
+.hypothesis/
+
+# Linting and type checking
+.mypy_cache/
+.ruff_cache/
+.bandit
+pyrightconfig.json
+
+# Local data and logs
+data/
+logs/
+*.log
+*.log.*
+*.tmp
+*.temp
+
+# Database files
+*.sqlite3
+*.sqlite3-journal
+*.db
+dump.rdb
+*.rdb
+
+# Database dumps and backups
+*.sql
+*.sql.zip
+*.dump
+*.backup
+
+# Environment and secrets
+.env
+.env.*
+local_settings.py
+secrets.json
+*.pem
+*.key
+*.crt
+
+# Static and media files (if not needed in container)
+staticfiles/
+media/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Docker related
+.dockerignore
+Dockerfile*
+docker-compose*.yml
+docker-compose*.yaml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+Jenkinsfile
+
+# Cloud deployment
+.vercel
+.netlify
+.firebase/
+.gcloudignore
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Monitoring
+newrelic.ini
+.sentry-dsn
+
+# Node.js (if present)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.orig
+*.bak
+*.backup
+
+# Performance profiling
+*.prof
+*.profile
+
+# Development tools config
+.pre-commit-config.yaml
+
+# Local development
+.local/
+.cache/

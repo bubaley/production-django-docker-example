@@ -26,11 +26,43 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Django specific
+*.log
+*.log.*
+*.pot
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+staticfiles/
+media/
 data/media/
 
+# Django migrations (comment out if you want to include them)
+# */migrations/*.py
+# */migrations/*.pyc
+
+# Django secret key and settings
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+celery-worker.pid
+
+# Redis dumps
+dump.rdb
+*.rdb
+
+# Database dumps and backups
+*.sql
+*.sql.zip
+*.dump
+*.backup
+
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -51,25 +83,16 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.ruff_cache/
 
 # Translations
 *.mo
-*.pot
 
-# Django stuff:
-*.log
-*.log.zip
-dump.rdb
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-celerybeat-schedule.db
-
-# Flask stuff:
+# Flask stuff (if mixed project)
 instance/
 .webassets-cache
 
-# Scrapy stuff:
+# Scrapy stuff
 .scrapy
 
 # Sphinx documentation
@@ -88,20 +111,17 @@ ipython_config.py
 # pyenv
 .python-version
 
+# UV (modern Python package manager)
+.uv_cache/
+uv.lock
+
 # pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
+Pipfile.lock
 
-# celery beat schedule file
-celerybeat-schedule
+# Poetry
+poetry.lock
 
-# SageMath parsed files
-*.sage.py
-
-# Environments
+# Virtual environments
 .env
 .venv
 env/
@@ -109,6 +129,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.virtualenv
 
 # Spyder project settings
 .spyderproject
@@ -128,20 +149,135 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.DS_Store
+# pyright
+pyrightconfig.json
 
-# local env files
-.env.local
-.env.*.local
+# Bandit security linter
+.bandit
+
+# Ruff
+.ruff_cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.vim/
+.emacs.d/
+*.sublime-project
+*.sublime-workspace
 
-*.sql
-*.sql.zip
+# JetBrains specific
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Atom
+.atom/
+
+# Vim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Windows
+*.lnk
+
+# Linux
+*~
+
+# Docker
+.dockerignore
+
+# Local data
+data/logs/
+data/static/
+data/media/
+
+# Cloud deployment
+.vercel
+.netlify
+.firebase/
+.gcloudignore
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# AWS
+.aws/
+
+# Google Cloud
+.gcloud/
+
+# Azure
+.azure/
+
+# Monitoring and APM
+newrelic.ini
+.sentry-dsn
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# Node.js (if using npm for frontend assets)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Local development
+.local/
+.cache/
+
+# Security
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+secrets.json
+
+# Performance profiling
+*.prof
+*.profile
