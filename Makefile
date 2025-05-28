@@ -1,5 +1,6 @@
-ifneq ("$(wildcard .env)","")
+ifneq (,$(wildcard .env))
 	include .env
+	export $(shell sed 's/=.*//' .env)
 endif
 
 MANAGE := python manage.py
@@ -45,33 +46,36 @@ coverage: ## run coverage
 	coverage report
 
 gunicorn: migrate ## run gunicorn
-	# django-admin compilemessages -l ru --ignore=env # Check Dockerfile for gettext
 	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
 
 celery: ## run celery workers with beat
 	celery -A core worker $(CELERY_BEAT_FLAG) -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
 
+compilemessages: ## run compilemessages
+	@echo "💬 Compiling messages..."
+	django-admin compilemessages -l ru --ignore=env
+
 secret: ## generate secret_key
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key().replace('#', '+'))"
 
-init-project: ## install all requirements, set pre-commit. Use setup project
-	uv add Django \
-      django-cors-headers \
-      django-environ \
-      djangorestframework \
-      djangorestframework-simplejwt \
-      loguru \
-      requests \
-      sentry-sdk \
-      gunicorn \
-      air-drf-relation \
-      django-filter \
-      redis \
-      celery \
-      django-extensions \
-      "psycopg[binary]"
-	uv add ruff pre-commit coverage --group dev
-	pre-commit install
+# ----------- PRODUCTION COMMANDS -----------
+
+prod-migrate: ## run migrate in production
+	@echo "📦 Waiting for services..."
+	@wait-for db:5432 -- echo "Postgres ready"
+	@wait-for redis:6379 -- echo "Redis ready"
+	@echo "⚙️ Running migrations"
+	$(MANAGE) migrate
+
+
+# prod-gunicorn: prod-migrate compilemessages ## run gunicorn in production with compilemessages
+prod-gunicorn: prod-migrate ## run gunicorn in production
+	@echo "🚀 Starting gunicorn..."
+	$(MAKE) gunicorn
+
+prod-celery: prod-migrate ## run celery in production
+	@echo "💣 Starting celery..."
+	$(MAKE) celery
 
 help:
 	@echo "Usage: make <target>"
