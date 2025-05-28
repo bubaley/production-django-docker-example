@@ -1,41 +1,37 @@
 [project]
 name = "app"
-version = "0.1.0"
+version = "1.2.3"
 description = ""
-requires-python = "==3.12.*"
+requires-python = "==3.13.*"
 dependencies = [
     "air-drf-relation>=0.6.1",
-    "celery>=5.4.0",
-    "django>=5.1.2",
-    "django-cors-headers>=4.5.0",
-    "django-environ>=0.11.2",
-    "django-filter>=24.3",
-    "djangorestframework>=3.15.2",
-    "djangorestframework-simplejwt>=5.3.1",
+    "celery>=5.5.2",
+    "django>=5.2.1",
+    "django-cors-headers>=4.7.0",
+    "django-environ>=0.12.0",
+    "django-filter>=25.1",
+    "djangorestframework>=3.16.0",
+    "djangorestframework-simplejwt>=5.5.0",
     "gunicorn>=23.0.0",
-    "loguru>=0.7.2",
-    "psycopg[binary]>=3.2.3",
-    "redis>=5.2.0",
+    "loguru>=0.7.3",
+    "psycopg[binary]>=3.2.9",
+    "redis>=6.2.0",
     "requests>=2.32.3",
-    "sentry-sdk>=2.17.0",
-    "django-extensions>=3.2.3",
+    "sentry-sdk>=2.29.1",
+    "django-extensions>=4.1",
 ]
 
 [dependency-groups]
-dev = [
-    "coverage>=7.6.4",
-    "pre-commit>=4.0.1",
-    "ruff>=0.7.1",
-]
+dev = ["coverage>=7.8.2", "pre-commit>=4.2.0", "ruff>=0.11.11"]
 
 [tool.pyupgrade]
-py312-plus = true
+py313-plus = true
 
 [tool.ruff]
 fix = true
 line-length = 120
 indent-width = 4
-target-version = "py312"
+target-version = "py313"
 
 [tool.ruff.lint]
 extend-select = ["I"]
@@ -49,6 +45,9 @@ quote-style = "single"
 skip-magic-trailing-comma = false
 line-ending = "auto"
 
+[tool.bandit]
+skips = ["B101"]
+
 [tool.coverage.report]
 fail_under = 60
 skip_empty = true
@@ -56,11 +55,6 @@ skip_covered = true
 exclude_lines = [
     "pragma: no cover",
     "if __name__ == '__main__':",
-    "if settings.DEBUG"
+    "if settings.DEBUG",
 ]
-omit = [
-    "*/migrations/*",
-    "*/tests/*",
-    "core/*",
-    'manage.py'
-]
+omit = ["*/migrations/*", "*/tests/*", "core/*", 'manage.py']
