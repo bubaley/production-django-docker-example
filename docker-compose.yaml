@@ -10,39 +10,40 @@ x-app-defaults: &app_defaults
   stop_grace_period: "3s"
   volumes:
     - ./data:/app/data
-  depends_on:
-    db:
-      condition: service_healthy
-    redis:
-      condition: service_healthy
+  env_file:
+    - .env
 services:
   app:
     <<: *app_defaults
     build: .
-    command: make gunicorn
+    command: make prod-gunicorn
     ports:
       - "${ENTRY_PORT:-15000}:8000"
     healthcheck:
       <<: *healthcheck_defaults
-      test: [ "CMD-SHELL", "wget -q --spider http://0.0.0.0:8000/api/v1/ready || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q --spider http://0.0.0.0:8000/api/v1/ready || exit 1",
+        ]
   celery:
     <<: *app_defaults
     build: .
-    command: make celery
+    command: make prod-celery
     depends_on:
       app:
         condition: service_healthy
   redis:
     <<: *restart_policy
-    image: redis:7.4.1-alpine
+    image: redis:8.0.1-alpine
     volumes:
       - redis_data:/data
     healthcheck:
       <<: *healthcheck_defaults
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
   db:
     <<: *restart_policy
-    image: postgres:17.0-alpine3.20
+    image: postgres:17.5-alpine3.21
     shm_size: 256m
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -52,7 +53,11 @@ services:
       POSTGRES_PASSWORD: ${SQL_PASSWORD:-postgres}
     healthcheck:
       <<: *healthcheck_defaults
-      test: [ "CMD-SHELL", "pg_isready -U ${SQL_USER:-postgres} -d ${SQL_DATABASE:-postgres}" ]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${SQL_USER:-postgres} -d ${SQL_DATABASE:-postgres}",
+        ]
     command: >
       postgres
       -c max_connections=${SQL_MAX_CONNECTIONS:-100}
