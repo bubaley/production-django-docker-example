@@ -13,7 +13,7 @@ A production-ready Django project template built with Python 3.13, featuring mod
 
 This practice helps you:
 - 🔄 **Track template updates** and know which version you're using
-- 📊 **Compare changes** when new template versions are released  
+- 📊 **Compare changes** when new template versions are released
 - 🚀 **Easier migration** to newer template versions
 - 📝 **Document customizations** made to the base template
 
