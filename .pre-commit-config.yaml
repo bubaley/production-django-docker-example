@@ -1,10 +1,10 @@
 exclude: .*migrations\/.*
 default_language_version:
-  python: python3.12
+  python: python3.13
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
@@ -13,24 +13,18 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.18.0
+    rev: v3.20.0
     hooks:
       - id: pyupgrade
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
+    rev: v0.11.11
     hooks:
       - id: ruff
       - id: ruff-format
 
-#  - repo: https://github.com/pre-commit/mirrors-mypy
-#    rev: v1.11.1
-#    hooks:
-#      - id: mypy
-#    additional_dependencies: [ django-stubs, djangorestframework-stubs, types-requests ]
-
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.9
+    rev: 1.8.3
     hooks:
       - id: bandit
 
@@ -38,6 +32,6 @@ repos:
     hooks:
       - id: django-migrations-check
         name: Check for missing Django migrations
-        entry: ./manage.py makemigrations --check --dry-run
+        entry: uv run python manage.py makemigrations --check --dry-run
         language: system
         pass_filenames: false
