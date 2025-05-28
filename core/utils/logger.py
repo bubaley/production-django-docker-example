@@ -183,6 +183,6 @@ class LoguruHandler(logging.Handler):
             task_id=data.get('id'),
             args=data.get('args'),
             kwargs=data.get('kwargs'),
-            runtime=f'{round(data['runtime'], 3)}s' if data.get('runtime') else None,
+            runtime=f'{round(data["runtime"], 3)}s' if data.get('runtime') else None,
             return_value=data.get('return_value'),
         )
