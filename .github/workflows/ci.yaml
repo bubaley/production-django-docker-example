@@ -18,6 +18,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  SECRET_KEY: test-secret-key
+
 jobs:
   lint-and-format:
     name: Code Quality & Linting
@@ -31,7 +34,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
 
@@ -58,15 +61,13 @@ jobs:
     name: Unit Tests & Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      SECRET_KEY: test-secret-key
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
 
@@ -83,12 +84,12 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          uv run coverage run -m pytest -v --tb=short
+          uv run coverage run manage.py test
           uv run coverage xml
           uv run coverage report
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
