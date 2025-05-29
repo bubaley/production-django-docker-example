@@ -12,7 +12,7 @@ concurrency:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: bubaley/domaestro
+  IMAGE_NAME: bubaley/django-docker-example
 
 jobs:
   build-and-push:
@@ -21,11 +21,12 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
-      packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Extract metadata
         id: meta
@@ -55,12 +56,16 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ github.ref }}-${{ github.workflow }}
+          cache-to: type=gha,mode=max,scope=${{ github.ref }}-${{ github.workflow }}
 
       - name: Docker info
         run: |
           docker version
           docker info
           docker buildx inspect --bootstrap
+
+      - name: Image push confirmation
+        run: |
+          echo "Successfully pushed images:"
+          echo "${{ steps.meta.outputs.tags }}" | tr ',' '\n' | sed 's/^/- /'
