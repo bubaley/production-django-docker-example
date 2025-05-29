@@ -59,15 +59,8 @@ ENV PYTHONUNBUFFERED=1 \
 # Create necessary directories for Django
 RUN mkdir -p /app/data/static /app/data/media
 
-# Uncomment this to collect static files
-# RUN python manage.py collectstatic --noinput --clear
-
 # Expose port 8000
 EXPOSE 8000
-
-# Health check for Django application
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/api/v1/ready', timeout=5)" || exit 1
 
 # Run Django with Gunicorn
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]

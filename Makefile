@@ -45,7 +45,7 @@ coverage: ## run coverage
 	coverage run manage.py test --keepdb
 	coverage report
 
-gunicorn: migrate ## run gunicorn
+gunicorn: ## run gunicorn
 	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
 
 celery: ## run celery workers with beat
@@ -54,6 +54,10 @@ celery: ## run celery workers with beat
 compilemessages: ## run compilemessages
 	@echo "💬 Compiling messages..."
 	django-admin compilemessages -l ru --ignore=env
+
+collectstatic: ## run compilemessages
+	@echo "📌 Collecting static files..."
+	python manage.py collectstatic --noinput
 
 secret: ## generate secret_key
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key().replace('#', '+'))"
@@ -68,8 +72,8 @@ prod-migrate: ## run migrate in production
 	$(MANAGE) migrate
 
 
-# prod-gunicorn: prod-migrate compilemessages ## run gunicorn in production with compilemessages
-prod-gunicorn: prod-migrate ## run gunicorn in production
+# prod-gunicorn: prod-migrate collectstatic compilemessages ## run gunicorn in production with compilemessages
+prod-gunicorn: collectstatic prod-migrate ## run gunicorn in production
 	@echo "🚀 Starting gunicorn..."
 	$(MAKE) gunicorn
 

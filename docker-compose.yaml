@@ -12,6 +12,9 @@ x-app-defaults: &app_defaults
     - ./data:/app/data
   env_file:
     - .env
+  depends_on:
+    - db
+    - redis
 services:
   app:
     <<: *app_defaults
@@ -24,7 +27,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q --spider http://0.0.0.0:8000/api/v1/ready || exit 1",
+          "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/api/v1/ready\")'",
         ]
   celery:
     <<: *app_defaults
