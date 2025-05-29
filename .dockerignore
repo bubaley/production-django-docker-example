@@ -69,8 +69,7 @@ coverage.xml
 .bandit
 pyrightconfig.json
 
-# Local data and logs
-data/
+# logs
 logs/
 *.log
 *.log.*
@@ -99,9 +98,8 @@ secrets.json
 *.key
 *.crt
 
-# Static and media files (if not needed in container)
-staticfiles/
-media/
+# Data folder
+data/
 
 # Celery
 celerybeat-schedule

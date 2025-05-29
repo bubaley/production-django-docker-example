@@ -35,7 +35,6 @@ db.sqlite3-journal
 local_settings.py
 staticfiles/
 media/
-data/media/
 
 # Django migrations (comment out if you want to include them)
 # */migrations/*.py
@@ -221,9 +220,7 @@ tramp
 .dockerignore
 
 # Local data
-data/logs/
-data/static/
-data/media/
+data/
 
 # Cloud deployment
 .vercel
