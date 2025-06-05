@@ -93,7 +93,7 @@ jobs:
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          files : ./coverage.xml
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false

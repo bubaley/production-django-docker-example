@@ -29,6 +29,11 @@ repos:
       - id: bandit
         args: ["--config", "pyproject.toml"]
 
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.7.11
+    hooks:
+      - id: uv-lock
+
   - repo: local
     hooks:
       - id: django-migrations-check
