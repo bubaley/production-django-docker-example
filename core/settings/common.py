@@ -78,9 +78,7 @@ if env.str('SQL_ENGINE', None):
             'PASSWORD': env.str('SQL_PASSWORD'),
             'HOST': env.str('SQL_HOST'),
             'PORT': env.str('SQL_PORT'),
-            'TEST': {
-                'NAME': 'test_' + env.str('SQL_DATABASE'),
-            },
+            'TEST': {'NAME': 'test_' + env.str('SQL_DATABASE')},
         }
     }
 else:
