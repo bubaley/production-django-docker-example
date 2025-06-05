@@ -28,61 +28,6 @@ wheels = [
 ]
 
 [[package]]
-name = "app"
-version = "1.5.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "air-drf-relation" },
-    { name = "celery" },
-    { name = "django" },
-    { name = "django-cors-headers" },
-    { name = "django-environ" },
-    { name = "django-extensions" },
-    { name = "django-filter" },
-    { name = "djangorestframework" },
-    { name = "djangorestframework-simplejwt" },
-    { name = "gunicorn" },
-    { name = "loguru" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "redis" },
-    { name = "requests" },
-    { name = "sentry-sdk" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "coverage" },
-    { name = "pre-commit" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "air-drf-relation", specifier = ">=0.6.1" },
-    { name = "celery", specifier = ">=5.5.3" },
-    { name = "django", specifier = ">=5.2.2" },
-    { name = "django-cors-headers", specifier = ">=4.7.0" },
-    { name = "django-environ", specifier = ">=0.12.0" },
-    { name = "django-extensions", specifier = ">=4.1" },
-    { name = "django-filter", specifier = ">=25.1" },
-    { name = "djangorestframework", specifier = ">=3.16.0" },
-    { name = "djangorestframework-simplejwt", specifier = "==5.4.0" },
-    { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "loguru", specifier = ">=0.7.3" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.2.9" },
-    { name = "redis", specifier = ">=6.2.0" },
-    { name = "requests", specifier = ">=2.32.3" },
-    { name = "sentry-sdk", specifier = ">=2.29.1" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "coverage", specifier = ">=7.8.2" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "ruff", specifier = ">=0.11.13" },
-]
-
-[[package]]
 name = "asgiref"
 version = "3.8.1"
 source = { registry = "https://pypi.org/simple" }
@@ -473,6 +418,61 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/08/39/679ca9b26c7bb2999ff122d50faa301e49af82ca9c066ec061cfbc0c6784/pre_commit-4.2.0.tar.gz", hash = "sha256:601283b9757afd87d40c4c4a9b2b5de9637a8ea02eaff7adc2d0fb4e04841146", size = 193424, upload-time = "2025-03-18T21:35:20.987Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/88/74/a88bf1b1efeae488a0c0b7bdf71429c313722d1fc0f377537fbe554e6180/pre_commit-4.2.0-py2.py3-none-any.whl", hash = "sha256:a009ca7205f1eb497d10b845e52c838a98b6cdd2102a6c8e4540e94ee75c58bd", size = 220707, upload-time = "2025-03-18T21:35:19.343Z" },
+]
+
+[[package]]
+name = "production-django-docker-example"
+version = "1.5.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "air-drf-relation" },
+    { name = "celery" },
+    { name = "django" },
+    { name = "django-cors-headers" },
+    { name = "django-environ" },
+    { name = "django-extensions" },
+    { name = "django-filter" },
+    { name = "djangorestframework" },
+    { name = "djangorestframework-simplejwt" },
+    { name = "gunicorn" },
+    { name = "loguru" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "redis" },
+    { name = "requests" },
+    { name = "sentry-sdk" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "coverage" },
+    { name = "pre-commit" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "air-drf-relation", specifier = ">=0.6.1" },
+    { name = "celery", specifier = ">=5.5.3" },
+    { name = "django", specifier = ">=5.2.2" },
+    { name = "django-cors-headers", specifier = ">=4.7.0" },
+    { name = "django-environ", specifier = ">=0.12.0" },
+    { name = "django-extensions", specifier = ">=4.1" },
+    { name = "django-filter", specifier = ">=25.1" },
+    { name = "djangorestframework", specifier = ">=3.16.0" },
+    { name = "djangorestframework-simplejwt", specifier = "==5.4.0" },
+    { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "loguru", specifier = ">=0.7.3" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.2.9" },
+    { name = "redis", specifier = ">=6.2.0" },
+    { name = "requests", specifier = ">=2.32.3" },
+    { name = "sentry-sdk", specifier = ">=2.29.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "coverage", specifier = ">=7.8.2" },
+    { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "ruff", specifier = ">=0.11.13" },
 ]
 
 [[package]]
