@@ -35,9 +35,12 @@ jobs:
           tag-prefix: "v"
           output-file: "false"
 
+      - name: Check if changelog is skipped
+        if: ${{ steps.changelog.outputs.skipped == 'true' }}
+        run: exit 78
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
           name: ${{ steps.changelog.outputs.tag }}
