@@ -1,6 +1,8 @@
 ifneq (,$(wildcard .env))
-	include .env
-	export $(shell sed 's/=.*//' .env)
+    include .env
+    export $(shell sed 's/=.*//' .env)
+else
+    $(warning ".env file not found!")
 endif
 
 MANAGE := python manage.py
@@ -11,14 +13,14 @@ CELERY_CONCURRENCY ?= 4
 CELERY_BEAT_ENABLED ?= false
 CELERY_BEAT_FLAG = $(if $(filter true True TRUE,$(CELERY_BEAT_ENABLED)),-B,)
 
-# ----------- SHORT COMMANDS -----------
+# ----------- SHORT COMMANDS ----------- #
 
 r: run ## short run runserver
 m: migrate ## short run migrate
 mm: makemigrations ## short run makemigrations
 mr: migrate run ## short run migrate && runserver
 
-# ----------- BASE COMMANDS -----------
+# ----------- BASE COMMANDS ----------- #
 
 run: ## run runserver
 	$(MANAGE) runserver
@@ -38,8 +40,8 @@ makemigrations: ## run makemigrations
 createsuperuser: ## run createsuperuser
 	$(MANAGE) createsuperuser
 
-test: ## run test --keepdb
-	$(MANAGE) test --keepdb
+test: ## run tests
+	$(MANAGE) test --keepdb --parallel
 
 coverage: ## run coverage
 	coverage run manage.py test --keepdb
@@ -59,10 +61,7 @@ collectstatic: ## run compilemessages
 	@echo "📌 Collecting static files..."
 	python manage.py collectstatic --noinput
 
-secret: ## generate secret_key
-	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key().replace('#', '+'))"
-
-# ----------- PRODUCTION COMMANDS -----------
+# ----------- PRODUCTION COMMANDS ----------- #
 
 prod-migrate: ## run migrate in production
 	@echo "📦 Waiting for services..."
@@ -71,15 +70,19 @@ prod-migrate: ## run migrate in production
 	@echo "⚙️ Running migrations"
 	$(MANAGE) migrate
 
-
 # prod-gunicorn: prod-migrate collectstatic compilemessages ## run gunicorn in production with compilemessages
 prod-gunicorn: collectstatic prod-migrate ## run gunicorn in production
 	@echo "🚀 Starting gunicorn..."
-	$(MAKE) gunicorn
+	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
 
 prod-celery: prod-migrate ## run celery in production
 	@echo "💣 Starting celery..."
-	$(MAKE) celery
+	celery -A core worker $(CELERY_BEAT_FLAG) -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
+
+# ----------- HELPERS ----------- #
+
+secret: ## generate secret_key
+	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key().replace('#', '+'))"
 
 help:
 	@echo "Usage: make <target>"

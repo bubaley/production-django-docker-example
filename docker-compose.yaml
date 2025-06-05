@@ -7,7 +7,7 @@ x-healthcheck-defaults: &healthcheck_defaults
   start_period: 30s
 x-app-defaults: &app_defaults
   <<: *restart_policy
-  stop_grace_period: "3s"
+  stop_grace_period: "10s"
   volumes:
     - ./data:/app/data
   env_file:
@@ -27,7 +27,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/api/v1/ready\")'",
+          'python -c "import urllib.request; urllib.request.urlopen(''http://localhost:8000/api/v1/ready'', timeout=5)"',
         ]
   celery:
     <<: *app_defaults

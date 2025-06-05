@@ -5,13 +5,13 @@ description = ""
 requires-python = "==3.13.*"
 dependencies = [
     "air-drf-relation>=0.6.1",
-    "celery>=5.5.2",
-    "django>=5.2.1",
+    "celery>=5.5.3",
+    "django>=5.2.2",
     "django-cors-headers>=4.7.0",
     "django-environ>=0.12.0",
     "django-filter>=25.1",
     "djangorestframework>=3.16.0",
-    "djangorestframework-simplejwt>=5.5.0",
+    "djangorestframework-simplejwt==5.4.0", # ERROR v5.5.0 type object 'OutstandingToken' has no attribute 'objects' on refresh token
     "gunicorn>=23.0.0",
     "loguru>=0.7.3",
     "psycopg[binary]>=3.2.9",
@@ -22,11 +22,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "coverage>=7.8.2",
-    "pre-commit>=4.2.0",
-    "ruff>=0.11.12",
-]
+dev = ["coverage>=7.8.2", "pre-commit>=4.2.0", "ruff>=0.11.12"]
 
 [tool.pyupgrade]
 py313-plus = true
@@ -52,13 +48,24 @@ line-ending = "auto"
 [tool.bandit]
 skips = ["B101"]
 
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/venv/*",
+    "manage.py",
+    "*/settings/*",
+    "*/node_modules/*",
+]
+
 [tool.coverage.report]
 fail_under = 60
 skip_empty = true
 skip_covered = true
 exclude_lines = [
     "pragma: no cover",
-    "if __name__ == '__main__':",
-    "if settings.DEBUG",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
 ]
-omit = ["*/migrations/*", "*/tests/*", "core/*", 'manage.py']

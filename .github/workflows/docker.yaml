@@ -28,13 +28,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get version from release
+        id: version
+        run: |
+          VERSION=$(git tag --points-at HEAD | head -n 1 || echo "latest")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}},prefix=,suffix=
+            type=raw,value=${{ steps.version.outputs.version }},prefix=,suffix=
             type=raw,value=latest
 
       - name: Set up Docker Buildx
@@ -58,6 +65,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha,scope=${{ github.ref }}-${{ github.workflow }}
           cache-to: type=gha,mode=max,scope=${{ github.ref }}-${{ github.workflow }}
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
 
       - name: Docker info
         run: |
