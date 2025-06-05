@@ -24,8 +24,8 @@ WORKDIR /app
 COPY --from=builder --chown=app:app /app /app
 COPY --chmod=755 wait-for /usr/local/bin/wait-for
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/api/v1/ready', timeout=2)"
+HEALTHCHECK --interval=5s --timeout=5s --start-period=30s --retries=10 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/api/v1/ready', timeout=5)"
 
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000
