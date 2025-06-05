@@ -14,15 +14,20 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.13-slim-bookworm
 
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     # gettext \ uncoment if use "compilemessages"
     netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
+RUN groupadd -g $GROUP_ID app && useradd -m -u $USER_ID -g app app
 WORKDIR /app
 COPY --from=builder --chown=app:app /app /app
 COPY --chmod=755 wait-for /usr/local/bin/wait-for
+USER app
 
 HEALTHCHECK --interval=5s --timeout=5s --start-period=30s --retries=10 \
     CMD python -c "import requests; requests.get('http://localhost:8000/api/v1/ready', timeout=5)"
