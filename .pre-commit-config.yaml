@@ -27,7 +27,7 @@ repos:
     rev: 1.8.3
     hooks:
       - id: bandit
-        args: ["-c pyproject.toml"]
+        args: ["--config", "pyproject.toml"]
 
   - repo: local
     hooks:

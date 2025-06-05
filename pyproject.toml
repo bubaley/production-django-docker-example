@@ -47,7 +47,7 @@ line-ending = "auto"
 
 [tool.bandit]
 skips = ["B101"]
-exclude = [
+exclude_dirs = [
   "tests",
   "*/tests/*",
   "*/migrations/*"
