@@ -41,7 +41,7 @@ createsuperuser: ## run createsuperuser
 	$(MANAGE) createsuperuser
 
 test: ## run tests
-	$(MANAGE) test --keepdb --parallel
+	$(MANAGE) test --keepdb
 
 coverage: ## run coverage
 	coverage run manage.py test --keepdb

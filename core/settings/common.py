@@ -79,7 +79,7 @@ if env.str('SQL_ENGINE', None):
             'HOST': env.str('SQL_HOST'),
             'PORT': env.str('SQL_PORT'),
             'TEST': {
-                'NAME': 'test_' + env.str('SQL_DATABASE'),  # database for tests
+                'NAME': 'test_' + env.str('SQL_DATABASE'),
             },
         }
     }
@@ -88,6 +88,7 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'data' / 'db.sqlite3',
+            'TEST': {'NAME': BASE_DIR / 'data' / 'test_db.sqlite3'},
         }
     }
 
