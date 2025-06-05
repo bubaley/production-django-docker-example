@@ -31,7 +31,8 @@ jobs:
       - name: Get version from release
         id: version
         run: |
-          VERSION=$(git tag --points-at HEAD | head -n 1 || echo "latest")
+          RAW_VERSION=$(git tag --points-at HEAD | head -n 1 || echo "latest")
+          VERSION="${RAW_VERSION#v}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
