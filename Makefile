@@ -1,8 +1,6 @@
 ifneq (,$(wildcard .env))
-    include .env
-    export $(shell sed 's/=.*//' .env)
-else
-    $(warning ".env file not found!")
+	include .env
+	export $(shell sed 's/=.*//' .env)
 endif
 
 MANAGE := python manage.py

@@ -29,9 +29,6 @@ COPY --from=builder --chown=app:app /app /app
 COPY --chmod=755 wait-for /usr/local/bin/wait-for
 USER app
 
-HEALTHCHECK --interval=5s --timeout=5s --start-period=30s --retries=10 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/api/v1/ready', timeout=5)"
-
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
