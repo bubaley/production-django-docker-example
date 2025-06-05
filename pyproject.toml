@@ -3,12 +3,14 @@ name = "app"
 version = "1.5.0"
 description = ""
 requires-python = "==3.13.*"
+classifiers = [ "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.13" ]
 dependencies = [
     "air-drf-relation>=0.6.1",
     "celery>=5.5.3",
     "django>=5.2.2",
     "django-cors-headers>=4.7.0",
     "django-environ>=0.12.0",
+    "django-extensions>=4.1",
     "django-filter>=25.1",
     "djangorestframework>=3.16.0",
     "djangorestframework-simplejwt==5.4.0", # ERROR v5.5.0 type object 'OutstandingToken' has no attribute 'objects' on refresh token
@@ -18,7 +20,6 @@ dependencies = [
     "redis>=6.2.0",
     "requests>=2.32.3",
     "sentry-sdk>=2.29.1",
-    "django-extensions>=4.1",
 ]
 
 [dependency-groups]
@@ -28,37 +29,21 @@ dev = [
     "ruff>=0.11.13",
 ]
 
-[tool.pyupgrade]
-py313-plus = true
-
 [tool.ruff]
-fix = true
-line-length = 120
-indent-width = 4
 target-version = "py313"
 
-[tool.ruff.lint]
-extend-select = ["I"]
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
-[tool.ruff.lint.extend-per-file-ignores]
-"core/settings/*.py" = ["F405", "F403"]
-
-[tool.ruff.format]
-quote-style = "single"
-skip-magic-trailing-comma = false
-line-ending = "auto"
-
-[tool.bandit]
-skips = ["B101"]
-exclude_dirs = [
-  "tests",
-  "*/tests/*",
-  "*/migrations/*"
-]
+line-length = 120
+indent-width = 4
+fix = true
+format.quote-style = "single"
+format.line-ending = "auto"
+format.skip-magic-trailing-comma = false
+lint.extend-select = [ "I" ]
+lint.extend-per-file-ignores."core/settings/*.py" = [ "F403", "F405" ]
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.coverage.run]
-source = ["."]
+source = [ "." ]
 omit = [
     "*/migrations/*",
     "*/tests/*",
@@ -77,4 +62,15 @@ exclude_lines = [
     "def __repr__",
     "raise AssertionError",
     "raise NotImplementedError",
+]
+
+[tool.pyupgrade]
+py313-plus = true
+
+[tool.bandit]
+skips = [ "B101" ]
+exclude_dirs = [
+    "tests",
+    "*/tests/*",
+    "*/migrations/*",
 ]

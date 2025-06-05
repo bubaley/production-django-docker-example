@@ -34,6 +34,12 @@ repos:
     hooks:
       - id: uv-lock
 
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: v2.6.0
+    hooks:
+      - id: pyproject-fmt
+        args: ["--keep-full-version", "--indent", "4"]
+
   - repo: local
     hooks:
       - id: django-migrations-check
