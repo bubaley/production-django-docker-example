@@ -47,6 +47,11 @@ line-ending = "auto"
 
 [tool.bandit]
 skips = ["B101"]
+exclude = [
+  "tests",
+  "*/tests/*",
+  "*/migrations/*"
+]
 
 [tool.coverage.run]
 source = ["."]
