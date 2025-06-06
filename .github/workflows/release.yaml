@@ -23,6 +23,7 @@ jobs:
       contents: write
     outputs:
       skipped: ${{ steps.changelog.outputs.skipped }}
+      tag: ${{ steps.changelog.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,7 +67,7 @@ jobs:
       - name: Get version from release
         id: version
         run: |
-          RAW_VERSION=$(git tag --points-at HEAD | head -n 1 || echo "latest")
+          RAW_VERSION=${{ needs.release.outputs.tag }}
           VERSION="${RAW_VERSION#v}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
