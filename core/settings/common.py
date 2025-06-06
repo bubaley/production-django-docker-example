@@ -101,6 +101,8 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = False
+LOCALE_DIR = BASE_DIR / 'data' / 'locale'
+LOCALE_PATHS = [LOCALE_DIR]
 
 STATICFILES_DIRS = [Path(BASE_DIR / 'static')]
 STATIC_ROOT = BASE_DIR / 'data' / 'static'
