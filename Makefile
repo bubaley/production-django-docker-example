@@ -46,7 +46,7 @@ coverage: ## run coverage
 	coverage report
 
 gunicorn: ## run gunicorn
-	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
+	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=60 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000 --preload
 
 celery: ## run celery workers with beat
 	celery -A core worker $(CELERY_BEAT_FLAG) -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
@@ -71,7 +71,7 @@ prod-migrate: ## run migrate in production
 # prod-gunicorn: prod-migrate collectstatic compilemessages ## run gunicorn in production with compilemessages
 prod-gunicorn: collectstatic prod-migrate ## run gunicorn in production
 	@echo "🚀 Starting gunicorn..."
-	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=300 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000
+	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=60 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000 --preload --max-requests 1000 --max-requests-jitter 50
 
 prod-celery: prod-migrate ## run celery in production
 	@echo "💣 Starting celery..."
