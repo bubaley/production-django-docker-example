@@ -1,4 +1,5 @@
 from .common import *
+from .version import __version__
 
 SENTRY_DSN = env.str('SENTRY_DSN', None)
 if SENTRY_DSN:
@@ -11,4 +12,5 @@ if SENTRY_DSN:
         environment=env.str('SENTRY_ENV', 'production'),
         traces_sample_rate=0.0,
         send_default_pii=True,
+        release=__version__,
     )
