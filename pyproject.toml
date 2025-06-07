@@ -1,6 +1,6 @@
 [project]
 name = "production-django-docker-example"
-version = "0.0.0"
+version = "0.0.0" # Version controlled in version.json
 description = ""
 requires-python = "==3.13.*"
 classifiers = [ "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.13" ]
