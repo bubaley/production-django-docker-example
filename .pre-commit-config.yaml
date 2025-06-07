@@ -33,6 +33,7 @@ repos:
     rev: 0.7.11
     hooks:
       - id: uv-lock
+        args: ["--locked"]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
     rev: v2.6.0
