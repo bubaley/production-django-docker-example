@@ -114,12 +114,6 @@ ipython_config.py
 # UV (modern Python package manager)
 .uv_cache/
 
-# pipenv
-Pipfile.lock
-
-# Poetry
-poetry.lock
-
 # Virtual environments
 .env
 .venv
