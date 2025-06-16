@@ -13,7 +13,7 @@ dependencies = [
     "django-extensions>=4.1",
     "django-filter>=25.1",
     "djangorestframework>=3.16.0",
-    "djangorestframework-simplejwt==5.4.0", # ERROR v5.5.0 type object 'OutstandingToken' has no attribute 'objects' on refresh token
+    "djangorestframework-simplejwt==5.5.0", # ERROR v5.5.0 type object 'OutstandingToken' has no attribute 'objects' on refresh token
     "gunicorn>=23.0.0",
     "loguru>=0.7.3",
     "psycopg[binary]>=3.2.9",
