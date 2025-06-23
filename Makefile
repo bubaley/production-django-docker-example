@@ -3,6 +3,10 @@ ifneq (,$(wildcard .env))
 	export $(shell sed 's/=.*//' .env)
 endif
 
+timestamp = $(shell date +"%Y-%m-%d %H:%M:%S.%3N")
+log = echo $(call timestamp) $(1)
+wait-for = $(call log,"👀$(2) waiting...") && wait-for $(1) && $(call log,"☑️$(2) ready")
+
 MANAGE := python manage.py
 DOCKER_COMPOSE := docker compose
 
@@ -52,29 +56,32 @@ celery: ## run celery workers with beat
 	celery -A core worker $(CELERY_BEAT_FLAG) -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
 
 compilemessages: ## run compilemessages
-	@echo "💬 Compiling messages..."
+	@$(call log, "💬 Compiling messages...")
 	django-admin compilemessages -l ru --ignore=env
+	@$(call log, "✅ Messages compiled")
 
 collectstatic: ## run compilemessages
-	@echo "📌 Collecting static files..."
+	@$(call log, "📂 Collecting static files...")
 	python manage.py collectstatic --noinput
+	@$(call log, "✅ Static files collected")
 
 # ----------- PRODUCTION COMMANDS ----------- #
 
 prod-migrate: ## run migrate in production
-	@echo "📦 Waiting for services..."
-	@wait-for db:5432 -- echo "Postgres ready"
-	@wait-for redis:6379 -- echo "Redis ready"
-	@echo "⚙️ Running migrations"
+	@$(call wait-for, db:5432, Postgres)
+	@$(call wait-for, redis:6379, Redis)
+
+	@$(call log, "🎯 Running migrations...")
 	$(MANAGE) migrate
+	@$(call log, "✅ Migrations completed")
 
 # prod-gunicorn: prod-migrate collectstatic compilemessages ## run gunicorn in production with compilemessages
 prod-gunicorn: collectstatic prod-migrate ## run gunicorn in production
-	@echo "🚀 Starting gunicorn..."
+	@$(call log, "🚀 Starting gunicorn...")
 	gunicorn core.wsgi:application --forwarded-allow-ips="*" --timeout=60 --workers=$(GUNICORN_WORKERS) --bind 0.0.0.0:8000 --preload --max-requests 1000 --max-requests-jitter 50
 
 prod-celery: prod-migrate ## run celery in production
-	@echo "💣 Starting celery..."
+	@$(call log, "💣 Starting celery...")
 	celery -A core worker $(CELERY_BEAT_FLAG) -E -n worker --loglevel=INFO --concurrency=$(CELERY_CONCURRENCY)
 
 # ----------- HELPERS ----------- #
